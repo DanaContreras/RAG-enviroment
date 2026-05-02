@@ -1,0 +1,63 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - ./qdrant_data:/qdrant/storage
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama_data:/root/.ollama
+
+  # Servicio para descargar los modelos llamando a la API del servicio ollama
+  ollama-setup:
+    image: curlimages/curl:latest
+    container_name: ollama-setup
+    command: >
+      sh -c "
+      echo 'Esperando a Ollama...' &&
+      while ! curl -s http://ollama:11434/api/tags > /dev/null; do sleep 2; done;
+      echo 'Descargando gemma3:4b...' &&
+      curl -X POST http://ollama:11434/api/pull -d '{"name": "gemma3:4b"}' &&
+      echo 'Descargando nomic-embed-text...' &&
+      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"nomic-embed-text\"}' &&
+      echo 'Modelos listos.'
+      "
+    depends_on:
+      - ollama
+
+  backend:
+    build: ./backend
+    container_name: rag-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - QDRANT_HOST=qdrant
+    depends_on:
+      - qdrant
+      - ollama
+      - ollama-setup
+
+  frontend:
+    build: ./frontend
+    container_name: rag-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+
+volumes:
+  qdrant_data:
+  ollama_data:
+  data:

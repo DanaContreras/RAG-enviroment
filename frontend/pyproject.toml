@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "rag-frontend"
+version = "0.1.0"
+description = "Frontend para RAG con Streamlit"
+authors = ["Tu Nombre <tu@email.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+streamlit = "*"
+requests = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
