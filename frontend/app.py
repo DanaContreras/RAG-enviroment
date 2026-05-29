@@ -8,8 +8,23 @@ st.set_page_config(page_title="RAG Local Chat", layout="wide")
 
 st.title("🤖 Chat RAG Local (Gemma 3 + Qdrant)")
 
-# Sidebar para gestión de archivos
+# Sidebar para gestión de archivos y modelos
 with st.sidebar:
+    st.header("Configuración")
+    provider_option = st.selectbox(
+        "Selecciona el proveedor de LLM:",
+        ("Ollama (Local)", "OpenAI", "Google Gemini")
+    )
+    
+    # Mapeo de nombres de UI a nombres internos
+    provider_map = {
+        "Ollama (Local)": "ollama",
+        "OpenAI": "openai",
+        "Google Gemini": "gemini"
+    }
+    selected_provider = provider_map[provider_option]
+
+    st.divider()
     st.header("Documentos")
     uploaded_file = st.file_uploader("Sube un PDF para analizar", type="pdf")
     
@@ -27,6 +42,22 @@ with st.sidebar:
                         st.error(f"Error: {response.json()['detail']}")
                 except Exception as e:
                     st.error(f"No se pudo conectar con el backend: {e}")
+
+    st.divider()
+    st.header("Documentos en la DB")
+    try:
+        response = requests.get(f"{BACKEND_URL}/files")
+        if response.status_code == 200:
+            files = response.json().get("files", [])
+            if files:
+                for f in files:
+                    st.markdown(f"📄 {f}")
+            else:
+                st.info("No hay documentos subidos.")
+        else:
+            st.error("Error al obtener la lista de archivos.")
+    except Exception as e:
+        st.error(f"Error de conexión al listar archivos: {e}")
 
 # Historial de chat
 if "messages" not in st.session_state:
@@ -47,7 +78,10 @@ if prompt := st.chat_input("¿Qué quieres saber sobre tus documentos?"):
             try:
                 response = requests.post(
                     f"{BACKEND_URL}/chat", 
-                    json={"message": prompt}
+                    json={
+                        "message": prompt,
+                        "provider": selected_provider
+                    }
                 )
                 if response.status_code == 200:
                     answer = response.json()["response"]

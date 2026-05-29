@@ -2,7 +2,7 @@
 
 Este proyecto implementa un sistema de Generación Aumentada por Recuperación (RAG) totalmente local utilizando **Gemma 3 (4B)** como modelo de lenguaje, **Qdrant** como base de datos vectorial y **Streamlit** para la interfaz de usuario.
 
-## 🚀 Características
+## Características
 
 - **LLM Local:** Utiliza Gemma 3 4B a través de Ollama.
 - **Embeddings:** `nomic-embed-text` para la vectorización de documentos.
@@ -10,12 +10,12 @@ Este proyecto implementa un sistema de Generación Aumentada por Recuperación (
 - **Interfaz Web:** Construida con Streamlit para cargar PDFs y chatear con ellos.
 - **Orquestación:** Totalmente contenedorizado con Docker Compose.
 
-## 🛠️ Requisitos
+## Requisitos
 
 - [Docker](https://docs.docker.com/get-docker/) y [Docker Compose](https://docs.docker.com/compose/install/).
 - Espacio en disco suficiente para los modelos (~4GB+).
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```text
 .
@@ -26,7 +26,7 @@ Este proyecto implementa un sistema de Generación Aumentada por Recuperación (
 └── .gitignore          # Archivos ignorados por git
 ```
 
-## 🚦 Cómo Ejecutar
+## Cómo Ejecutar
 
 1. **Clonar el repositorio:**
    ```bash
@@ -45,14 +45,14 @@ Este proyecto implementa un sistema de Generación Aumentada por Recuperación (
    - **Backend (API Docs):** [http://localhost:8000/docs](http://localhost:8000/docs)
    - **Qdrant Dashboard:** [http://localhost:6333/dashboard](http://localhost:6333/dashboard)
 
-## 📖 Uso
+## Uso
 
-1. Abre la interfaz de Streamlit en tu navegador.
-2. En la barra lateral, sube un archivo **PDF**.
-3. Haz clic en **"Procesar Documento"**. Esto dividirá el texto en fragmentos, generará embeddings y los guardará en Qdrant.
-4. Escribe tus preguntas en el chat inferior. El sistema recuperará el contexto relevante de tus documentos para generar una respuesta precisa.
+1. Abrir la interfaz de Streamlit en tu navegador.
+2. En la barra lateral, subir un archivo **PDF**.
+3. Hacer clic en **"Procesar Documento"**. Esto dividirá el texto en fragmentos, generará embeddings y los guardará en Qdrant.
+4. Preguntas en el chat inferior. El sistema recuperará el contexto relevante de los documentos para generar una respuesta.
 
-## ⚙️ Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 - **LangChain:** Framework para la orquestación de la cadena RAG.
 - **FastAPI:** Framework para el backend.

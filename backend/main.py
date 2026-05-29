@@ -21,6 +21,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 class ChatRequest(BaseModel):
     message: str
+    provider: str = "ollama"
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
@@ -37,10 +38,18 @@ async def upload_file(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/files")
+async def list_files():
+    try:
+        files = os.listdir(DATA_DIR)
+        return {"files": [f for f in files if f.endswith(".pdf")]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/chat")
 async def chat(request: ChatRequest):
     try:
-        chain = get_rag_chain()
+        chain = get_rag_chain(provider=request.provider)
         response = chain.invoke(request.message)
         return {"response": response}
     except Exception as e:

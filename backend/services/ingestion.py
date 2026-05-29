@@ -36,7 +36,7 @@ def process_pdf(file_path: str):
         embedding=embeddings,
         url=f"http://{QDRANT_HOST}:6333",
         collection_name=COLLECTION_NAME,
-        force_recreate=True
+        force_recreate=False
     )
     
     return len(chunks)
